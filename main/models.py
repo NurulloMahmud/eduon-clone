@@ -47,6 +47,7 @@ class Course(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
+    muqova = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=20, decimal_places=2)
 
 
