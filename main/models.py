@@ -11,6 +11,13 @@ class Language(models.Model):
         return self.name
 
 
+class Level(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class UserAccount(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
@@ -39,6 +46,7 @@ class Course(models.Model):
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
 
 
