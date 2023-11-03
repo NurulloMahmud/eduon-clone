@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+
 
 User = get_user_model()
 
@@ -45,9 +48,10 @@ class Course(models.Model):
     title = models.CharField(max_length=250)
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category)
-    level = models.ForeignKey(Level, on_delete=models.CASCADE)
+    categories = models.ManyToManyField(SubCategory)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2)
+    last_update = models.DateTimeField(default=timezone.now())
 
 
 class CourseComment(models.Model):
