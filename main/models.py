@@ -49,9 +49,12 @@ class Course(models.Model):
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     categories = models.ManyToManyField(SubCategory)
-    level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    last_update = models.DateTimeField(default=timezone.now())
+    target_audience = models.CharField(max_length=200)
+    course_thumbnail = models.TextField()
+    trailer = models.TextField()
+    last_update = models.DateTimeField(default=timezone.now)
 
 
 class CourseComment(models.Model):
@@ -98,6 +101,7 @@ class Lesson(models.Model):
     video_location = models.TextField()
     length = models.DurationField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    thumbnail = models.TextField()
 
 
 class LessonComment(models.Model):
@@ -145,3 +149,21 @@ class Enrolled(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     courses = models.ManyToManyField(Course)
+
+
+class Webinar(models.Model):
+    CHOICES = (
+        ('youtube', 'YouTube'),
+        ('agora', 'Agora'),
+    )
+    title = models.CharField(max_length=250)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    trailer = models.TextField()
+    thumbnail = models.TextField()
+    date = models.DateTimeField()
+    start_time = models.TimeField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    speakers = models.ForeignKey(User, on_delete=models.CASCADE)
+    youtube = models.TextField()
+    webinar_type = models.CharField(choices=CHOICES)
+    description = models.TextField()
