@@ -56,3 +56,5 @@ class LessonStarSerializer(ModelSerializer):
     class Meta:
         model = LessonStar
         fields = '__all__'
+
+

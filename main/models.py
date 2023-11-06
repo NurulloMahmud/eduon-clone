@@ -1,10 +1,19 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+
 
 User = get_user_model()
 
 
 class Language(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Level(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
@@ -38,8 +47,11 @@ class Course(models.Model):
     title = models.CharField(max_length=250)
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(SubCategory)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2)
+    last_update = models.DateTimeField(default=timezone.now)
 
 
 class CourseComment(models.Model):
@@ -47,7 +59,7 @@ class CourseComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now())
 
 
 class CourseStar(models.Model):
