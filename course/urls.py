@@ -1,9 +1,11 @@
+
 from django.urls import path
-from .views import UploadCourseAPIView, CourseCommentAPIView, CourseStarAPIView, CourseModulAPIView, \
-    CourseModulLessonAPIView, LessonCommentAPIView, LessonStarAPIView, EditCourseAPIView, CourseCountAPIView
+from .views import CourseAPIView, CourseCommentAPIView, CourseStarAPIView, CourseModulAPIView, \
+    CourseModulLessonAPIView, LessonCommentAPIView, LessonStarAPIView, EditCourseAPIView, CourseCountAPIView, \
+    UploadWebinarAPIView
 
 urlpatterns = [
-    path('uploadcourse', UploadCourseAPIView.as_view(), name='upload_course'),
+    path('uploadcourse', CourseAPIView.as_view(), name='upload_course'),
     path('commentcourse', CourseCommentAPIView.as_view(), name='comment_course'),
     path('coursestar', CourseStarAPIView.as_view(), name='course_star'),
     path('coursemodul', CourseModulAPIView.as_view(), name='course_modul'),
@@ -12,4 +14,5 @@ urlpatterns = [
     path('lessonstar', LessonStarAPIView.as_view(), name='lesson_star'),
     path('editcourse/<int:pk>', EditCourseAPIView.as_view(), name='edit_course'),
     path('usercoursecount', CourseCountAPIView.as_view(), name='user_course_count'),
+    path('uploadwebinar', UploadWebinarAPIView.as_view(), name='upload_webinar'),
 ]

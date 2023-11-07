@@ -51,7 +51,26 @@ class Course(models.Model):
     sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2)
+    # categories = models.ManyToManyField(SubCategory)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
+    target_audience = models.CharField(max_length=200)
+    course_thumbnail = models.TextField()
+    trailer = models.TextField()
     last_update = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        # self.category orqali category ni olish
+        category = self.category
+
+        # super() metodi orqali asosiy save() metodi chaqiriladi
+        super().save(*args, **kwargs)
+
+        # sub_category larni category ga oid ma'lumotlardan olib olamiz
+        sub_categories = category.subcategory_set.all()
+
+        # sub_category larni self.sub_category orqali qo'shamiz
+        self.sub_category.set(sub_categories)
 
 
 class CourseComment(models.Model):
@@ -59,7 +78,7 @@ class CourseComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
 
 
 class CourseStar(models.Model):
@@ -98,6 +117,7 @@ class Lesson(models.Model):
     video_location = models.TextField()
     length = models.DurationField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    thumbnail = models.TextField()
 
 
 class LessonComment(models.Model):
@@ -145,3 +165,21 @@ class Enrolled(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     courses = models.ManyToManyField(Course)
+
+
+class Webinar(models.Model):
+    CHOICES = (
+        ('youtube', 'YouTube'),
+        ('agora', 'Agora'),
+    )
+    title = models.CharField(max_length=250)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    trailer = models.TextField()
+    thumbnail = models.TextField()
+    date = models.DateTimeField()
+    start_time = models.TimeField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    speakers = models.ForeignKey(User, on_delete=models.CASCADE)
+    youtube = models.TextField()
+    webinar_type = models.CharField(choices=CHOICES, max_length=10)
+    description = models.TextField()
