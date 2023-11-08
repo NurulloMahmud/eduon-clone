@@ -1,2 +1,3 @@
 # eduon-clone
-eduon.uz clone for course project
+## This project is currently in development process
+eduon.uz API clone for course project
