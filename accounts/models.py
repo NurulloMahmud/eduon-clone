@@ -3,7 +3,7 @@ from django.contrib.auth.views import get_user_model
 
 User = get_user_model()
 
-
+#
 class Role(models.Model):
     name = models.CharField(max_length=100)
 

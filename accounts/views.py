@@ -35,7 +35,7 @@ class RegisterAPIView(APIView):
                 return Response({'success': True, 'message': 'Successfully registered'})
         else:
             return Response({'success': False, 'message': 'Passwords are not same!'}, status=400)
-
+#
 
 class LogoutAPIView(APIView):
     permission_classes = (IsAuthenticated,)

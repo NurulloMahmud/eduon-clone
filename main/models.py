@@ -117,7 +117,7 @@ class LessonStar(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     star = models.PositiveIntegerField(choices=STAR_CHOICES)    
 
-
+#
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     total_amount = models.DecimalField(max_digits=20, decimal_places=2)

@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission
 
 from accounts.models import UserRole
 
-
+#
 class IsAdminPermission(BasePermission):
 
     def has_permission(self, request, view):
