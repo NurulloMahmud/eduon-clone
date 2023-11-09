@@ -13,7 +13,7 @@ deactivate () {
         export PYTHONHOME
         unset _OLD_VIRTUAL_PYTHONHOME
     fi
-
+#
     # This should detect bash and zsh, which have a hash command that must
     # be called to get it to forget past commands.  Without forgetting
     # past commands the $PATH changes we made may not be respected
