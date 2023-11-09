@@ -12,8 +12,8 @@ User = get_user_model()
 class RegisterAPIView(APIView):
 
     def post(self, request):
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
+        # first_name = request.data.get('first_name')
+        # last_name = request.data.get('last_name')
         email = request.data.get('email')
         username = request.data.get('username')
         password1 = request.data.get('password1')
@@ -26,8 +26,8 @@ class RegisterAPIView(APIView):
                 return Response({'success': False, 'message': 'This username already exists!'}, status=400)
             else:
                 user = User.objects.create_user(
-                    first_name=first_name,
-                    last_name=last_name,
+                    # first_name=first_name,
+                    # last_name=last_name,
                     email=email,
                     username=username,
                     password=password1
