@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 
-
 User = get_user_model()
 
 
@@ -48,7 +47,11 @@ class Course(models.Model):
     title = models.CharField(max_length=250)
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(SubCategory)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
+    # categories = models.ManyToManyField(SubCategory)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     target_audience = models.CharField(max_length=200)
@@ -56,13 +59,26 @@ class Course(models.Model):
     trailer = models.TextField()
     last_update = models.DateTimeField(default=timezone.now)
 
+    def save(self, *args, **kwargs):
+        # self.category orqali category ni olish
+        category = self.category
+
+        # super() metodi orqali asosiy save() metodi chaqiriladi
+        super().save(*args, **kwargs)
+
+        # sub_category larni category ga oid ma'lumotlardan olib olamiz
+        sub_categories = category.subcategory_set.all()
+
+        # sub_category larni self.sub_category orqali qo'shamiz
+        self.sub_category.set(sub_categories)
+
 
 class CourseComment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
     reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=timezone.now)
 
 
 class CourseStar(models.Model):
@@ -165,5 +181,5 @@ class Webinar(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     speakers = models.ForeignKey(User, on_delete=models.CASCADE)
     youtube = models.TextField()
-    webinar_type = models.CharField(choices=CHOICES)
+    webinar_type = models.CharField(choices=CHOICES, max_length=10)
     description = models.TextField()
