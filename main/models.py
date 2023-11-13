@@ -47,30 +47,15 @@ class Course(models.Model):
     title = models.CharField(max_length=250)
     about = models.TextField()
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    # categories = models.ManyToManyField(SubCategory)
+    categories = models.ManyToManyField(SubCategory)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     target_audience = models.CharField(max_length=200)
     course_thumbnail = models.TextField()
     trailer = models.TextField()
     last_update = models.DateTimeField(default=timezone.now)
-
-    def save(self, *args, **kwargs):
-        # self.category orqali category ni olish
-        category = self.category
-
-        # super() metodi orqali asosiy save() metodi chaqiriladi
-        super().save(*args, **kwargs)
-
-        # sub_category larni category ga oid ma'lumotlardan olib olamiz
-        sub_categories = category.subcategory_set.all()
-
-        # sub_category larni self.sub_category orqali qo'shamiz
-        self.sub_category.set(sub_categories)
 
 
 class CourseComment(models.Model):
