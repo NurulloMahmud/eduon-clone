@@ -1,11 +1,11 @@
 from main.models import Course, Category, SubCategory, CourseStar, CourseComment, Modul, Lesson, LessonComment, \
-    LessonStar, Webinar
+    LessonStar, Webinar, Transaction, Enrolled
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.views import APIView
 from main.serializer import CategorySerializer, SubCategorySerializer, CourseSerializer, CourseCommentSerializer, \
     CourseModulSerializer, CourseModulLessonSerializer, LessonCommentSerializer, \
-    LessonStarSerializer, CourseStarSerializer, UploadWebinarSerializer
+    LessonStarSerializer, CourseStarSerializer, UploadWebinarSerializer, TransactionSerializer, EnrolledSerializer
 
 
 class CourseAPIView(GenericAPIView):
@@ -159,9 +159,9 @@ class EditCourseAPIView(GenericAPIView):
         return Response({'Success': True})
 
 
-class CourseCountAPIView(ListAPIView):
+class CourseCountAPIView(GenericAPIView):
     permission_classes = ()
-    serializer_class = ()
+    serializer_class = ''
 
     def get(self, request):
         user_id = request.user.id
@@ -192,3 +192,23 @@ class UploadWebinarAPIView(CreateAPIView):
             webinar_serializer.save()
             return Response({'Success': True, 'message': webinar_serializer.data}, status=200)
         return Response(status=400)
+
+
+class UserBalanceAPIView(GenericAPIView):
+    permission_classes = ()
+    serializer_class = TransactionSerializer
+
+    def get(self, request):
+        balance = Transaction.objects.all()
+        balance_serializer = TransactionSerializer(balance, many=True)
+        return Response({'User transaction data': balance_serializer.data})
+
+
+class EnrolledAPIView(GenericAPIView):
+    permission_classes = ()
+    serializer_class = ''
+
+    def get(self, request):
+        enrolled = Enrolled.objects.all()
+        enrolled_serializer = EnrolledSerializer(enrolled, many=True)
+        return Response({'Enrolled data': enrolled_serializer.data})

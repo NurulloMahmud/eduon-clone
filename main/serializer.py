@@ -1,6 +1,6 @@
 from rest_framework.serializers import Serializer, ModelSerializer
 from .models import Course, Language, SubCategory, Category, CourseComment, CourseStar, Modul, Lesson, LessonComment, \
-    LessonStar, Webinar
+    LessonStar, Webinar, Transaction, TransactionCourse, Enrolled
 from rest_framework import serializers
 
 
@@ -61,4 +61,22 @@ class LessonStarSerializer(ModelSerializer):
 class UploadWebinarSerializer(ModelSerializer):
     class Meta:
         model = Webinar
+        fields = '__all__'
+
+
+class TransactionSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+
+
+class TransactionCourseSerializer(ModelSerializer):
+    class Meta:
+        model = TransactionCourse
+        fields = '__all__'
+
+
+class EnrolledSerializer(ModelSerializer):
+    class Meta:
+        model = Enrolled
         fields = '__all__'
