@@ -1,10 +1,9 @@
 from rest_framework.generics import GenericAPIView, CreateAPIView, ListAPIView
 from rest_framework.response import Response
 
-from head.serializer import CartSerializer
 from main.models import Course, Modul, Lesson, Webinar, Cart, CourseStar
 from main.serializer import CourseSerializer, CourseModulSerializer, CourseModulLessonSerializer, \
-    UploadWebinarSerializer, CourseStarSerializer
+    UploadWebinarSerializer, CourseStarSerializer, CartSerializer
 
 
 class CourseAPIView(GenericAPIView):
