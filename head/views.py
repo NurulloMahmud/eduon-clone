@@ -21,8 +21,11 @@ class CourseModulAPIView(CreateAPIView):
     permission_classes = ()
     serializer_class = CourseModulSerializer
 
-    def get(self, request):
-        course_modul = Modul.objects.all()
+    def get_object(self, pk):
+        return Course.objects.get(pk=pk)
+
+    def get(self, request, pk):
+        course_modul = self.get_object(pk)
         course_modul_serializer = CourseSerializer(course_modul, many=True)
         return Response({'Course modul data': course_modul_serializer.data})
 
@@ -31,8 +34,10 @@ class CourseModulLessonAPIView(CreateAPIView):
     permission_classes = ()
     serializer_class = CourseModulLessonSerializer
 
-    def get(self, request):
-        modul_lesson = Lesson.objects.all()
+    def get_object(self, pk):
+        return Lesson.objects.get(pk=pk)
+    def get(self, request, pk):
+        modul_lesson = self.get_object(pk)
         modul_lesson_serializer = CourseSerializer(modul_lesson, many=True)
         return Response({'Modul lesson data': modul_lesson_serializer.data})
 
@@ -81,15 +86,10 @@ class CartAPIView(CreateAPIView, ListAPIView):
 class CourseStarAPIViews(CreateAPIView, ListAPIView):
     permission_classes = ()
     serializer_class = CourseStarSerializer
+    def get_object(self, pk):
+        return Course.objects.get(pk=pk)
 
-    def post(self, request):
-        course_star_serializer = CourseStarSerializer(data=request.data)
-        if course_star_serializer.is_valid(raise_exception=True):
-            course_star_serializer.save()
-            return Response({'Success': True, 'data': course_star_serializer.data}, status=201)
-        return Response({'Success': False, 'message': 'Invalid data'}, status=400)
-
-    def get(self, request):
-        course_stars = CourseStar.objects.all()
+    def get(self, request, pk):
+        course_stars = self.get_object(pk)
         course_star_serializer = CourseStarSerializer(course_stars, many=True)
         return Response({'Course star rating': course_star_serializer.data})
