@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-
 User = get_user_model()
 
 
@@ -34,6 +33,9 @@ class Category(models.Model):
         db_table = 'categories'
         verbose_name_plural = 'categories'
 
+    def __str__(self):
+        return self.name
+
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=250)
@@ -41,6 +43,9 @@ class SubCategory(models.Model):
 
     class Meta:
         db_table = 'sub_categories'
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
@@ -52,7 +57,7 @@ class Course(models.Model):
     categories = models.ManyToManyField(SubCategory)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    target_audience = models.CharField(max_length=200)
+    target_audience = models.CharField(max_length=200) # kurs kimlar uchun
     course_thumbnail = models.TextField()
     trailer = models.TextField()
     last_update = models.DateTimeField(default=timezone.now)
@@ -62,7 +67,7 @@ class CourseComment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
-    reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    # reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
 
 
@@ -81,7 +86,7 @@ class CourseStar(models.Model):
 
 # This is a bridge table between course and mentors
 class MentorCourse(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)    # User is a mentor
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # User is a mentor
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
@@ -104,13 +109,19 @@ class Lesson(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     thumbnail = models.TextField()
 
+    def __str__(self):
+        return f'{self.modul}'
+
 
 class LessonComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     text = models.TextField()
-    reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    # reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
+
+    # def __str__(self):
+    #     return self.lesson.modul.title
 
 
 class LessonStar(models.Model):
@@ -123,7 +134,10 @@ class LessonStar(models.Model):
     ]
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    star = models.PositiveIntegerField(choices=STAR_CHOICES)    
+    star = models.PositiveIntegerField(choices=STAR_CHOICES)
+
+    def __str__(self):
+        return f'{self.lesson} -> {self.star}'
 
 
 class Transaction(models.Model):
@@ -146,6 +160,8 @@ class Enrolled(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
+    def __str__(self):
+        return self.course
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -168,3 +184,6 @@ class Webinar(models.Model):
     youtube = models.TextField()
     webinar_type = models.CharField(choices=CHOICES, max_length=10)
     description = models.TextField()
+
+    def __str__(self):
+        return self.title

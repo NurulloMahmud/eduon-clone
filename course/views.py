@@ -1,9 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
 
-from main.models import Course, Lesson, Transaction, Enrolled, MentorCourse
+from main.models import Course, Lesson, Transaction, Enrolled, MentorCourse, LessonStar, LessonComment, CourseComment, \
+    CourseStar
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.views import APIView
+
+from main.permissions import HasPurchasedCourse, IsCourseMentor
 from main.serializer import CourseSerializer, CourseCommentSerializer, \
     CourseModulSerializer, CourseModulLessonSerializer, LessonCommentSerializer, \
     LessonStarSerializer, CourseStarSerializer, UploadWebinarSerializer, TransactionSerializer, EnrolledSerializer
@@ -22,16 +25,11 @@ class UploadCourseAPIView(GenericAPIView):
 
 
 class CourseCommentAPIView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = CourseCommentSerializer
 
     def get_object(self, pk):
         return Course.objects.get(pk=pk)
-
-    def get(self, request, pk):
-        comment = self.get_object(pk)
-        comment_serializer = CourseSerializer(comment, many=True)
-        return Response({'Course comment data': comment_serializer.data})
 
     def post(self, request, pk):
         course = self.get_object(pk)
@@ -45,25 +43,30 @@ class CourseCommentAPIView(GenericAPIView):
 
 
 class CourseStarAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = CourseStarSerializer
 
     def get_object(self, pk):
-        return Course.objects.get(pk=pk)
+        return CourseStar.objects.get(pk=pk)
 
-    def post(self, request, pk):
-        course = self.get_object(pk)
-        star_data = request.data
-        star_data['course'] = course.id
-        course_star_serializer = CourseStarSerializer(data=star_data)
-        if course_star_serializer.is_valid(raise_exception=True):
-            course_star_serializer.save()
-            return Response({'Success': True, "data": course_star_serializer.data}, status=200)
-        return Response(status=400)
+    def get(self, request, pk):
+        course_stars = self.get_object(pk)
+        course_star_serializer = CourseStarSerializer(course_stars)
+        return Response({'Course star rating': course_star_serializer.data})
+
+    # def post(self, request, pk):
+    #     course = self.get_object(pk)
+    #     star_data = request.data
+    #     star_data['course'] = course.id
+    #     course_star_serializer = CourseStarSerializer(data=star_data)
+    #     if course_star_serializer.is_valid(raise_exception=True):
+    #         course_star_serializer.save()
+    #         return Response({'Success': True, "data": course_star_serializer.data}, status=200)
+    #     return Response(status=400)
 
 
 class CourseModulAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = CourseModulSerializer
 
     def post(self, request):
@@ -75,7 +78,7 @@ class CourseModulAPIView(GenericAPIView):
 
 
 class CourseModulLessonAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = CourseModulLessonSerializer
 
     def post(self, request):
@@ -87,39 +90,33 @@ class CourseModulLessonAPIView(GenericAPIView):
 
 
 class LessonCommentAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = LessonCommentSerializer
 
     def get_object(self, pk):
         return Lesson.objects.get(pk=pk)
 
-    def get(self, request, pk):
-        lesson_comment = self.get_object(pk)
-        lesson_comment_serializer = CourseSerializer(lesson_comment, many=True)
-        return Response({'Lesson comment data': lesson_comment_serializer.data})
-
     def post(self, request, pk):
-        lesson_comment = self.get_object(pk)
+        lesson_comments = self.get_object(pk)
         lesson_data = request.data
-        lesson_data['lesson'] = lesson_comment.id
+        lesson_data[
+            'lesson'] = lesson_comments.id
         lesson_comment_serializer = LessonCommentSerializer(data=lesson_data)
+
         if lesson_comment_serializer.is_valid(raise_exception=True):
             lesson_comment_serializer.save()
             return Response({'Success': True, 'data': lesson_comment_serializer.data}, status=200)
-        return Response(status=400)
+
+        return Response({'Success': False, 'errors': lesson_comment_serializer.errors},
+                        status=400)
 
 
 class LessonStarAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, HasPurchasedCourse)
     serializer_class = LessonStarSerializer
 
     def get_object(self, pk):
         return Lesson.objects.get(pk=pk)
-
-    def get(self, request, pk):
-        lesson_star = self.get_object(pk)
-        lesson_star_serializer = LessonStarSerializer(lesson_star, many=True)
-        return Response({'Lesson star data': lesson_star_serializer.data})
 
     def post(self, request, pk):
         lesson_star = self.get_object(pk)
@@ -133,7 +130,7 @@ class LessonStarAPIView(GenericAPIView):
 
 
 class EditCourseAPIView(GenericAPIView):
-    permission_classes = ()
+    permission_classes = (IsAuthenticated, IsCourseMentor)
     serializer_class = CourseSerializer
 
     def get_object(self, pk):
