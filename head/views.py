@@ -1,6 +1,9 @@
 from rest_framework.generics import GenericAPIView, CreateAPIView, ListAPIView
 from rest_framework.response import Response
 
+from django_filters import rest_framework as filters
+
+from head.filter_ import CourseFilter
 from main.models import Course, Modul, Lesson, Webinar, Cart, CourseStar
 from main.serializer import CourseSerializer, CourseModulSerializer, CourseModulLessonSerializer, \
     UploadWebinarSerializer, CourseStarSerializer, CartSerializer
@@ -92,3 +95,11 @@ class CourseStarAPIViews(CreateAPIView, ListAPIView):
         course_stars = self.get_object(pk)
         course_star_serializer = CourseStarSerializer(course_stars, many=True)
         return Response({'Course star rating': course_star_serializer.data})
+
+
+class CourseFilterAPIView(ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = ()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CourseFilter
