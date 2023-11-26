@@ -1,7 +1,7 @@
+from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-
 User = get_user_model()
 
 
@@ -55,11 +55,9 @@ class Course(models.Model):
     level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     categories = models.ManyToManyField(SubCategory)
-    level = models.ForeignKey(Level, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=20, decimal_places=2)
-    target_audience = models.CharField(max_length=200) # kurs kimlar uchun
-    course_thumbnail = models.TextField()
-    trailer = models.TextField()
+    target_audience = models.CharField(max_length=200)
+    course_thumbnail = models.FileField(upload_to='media/images/')
+    trailer = models.FileField(upload_to='media/videos/')
     last_update = models.DateTimeField(default=timezone.now)
 
 
@@ -67,7 +65,6 @@ class CourseComment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
-    # reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
 
 
@@ -104,10 +101,10 @@ class Modul(models.Model):
 
 class Lesson(models.Model):
     modul = models.ForeignKey(Modul, on_delete=models.CASCADE)
-    video_location = models.TextField()
-    length = models.DurationField()
+    video_location = models.FileField(upload_to='media/videos/')
+    length = models.DurationField(default=timedelta(seconds=0))
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    thumbnail = models.TextField()
+    thumbnail = models.FileField(upload_to='media/images/')
 
     def __str__(self):
         return f'{self.modul}'
@@ -117,11 +114,7 @@ class LessonComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     text = models.TextField()
-    # reply_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
-
-    # def __str__(self):
-    #     return self.lesson.modul.title
 
 
 class LessonStar(models.Model):
@@ -163,9 +156,10 @@ class Enrolled(models.Model):
     def __str__(self):
         return self.course
 
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    courses = models.ManyToManyField(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 class Webinar(models.Model):
@@ -175,12 +169,12 @@ class Webinar(models.Model):
     )
     title = models.CharField(max_length=250)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    trailer = models.TextField()
-    thumbnail = models.TextField()
+    trailer = models.FileField(upload_to='media/videos/')
+    thumbnail = models.FileField(upload_to='media/images/')
     date = models.DateTimeField()
     start_time = models.TimeField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    speakers = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     youtube = models.TextField()
     webinar_type = models.CharField(choices=CHOICES, max_length=10)
     description = models.TextField()

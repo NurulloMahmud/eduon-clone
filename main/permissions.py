@@ -1,27 +1,22 @@
 from rest_framework.permissions import BasePermission
 
-from main.models import MentorCourse
+from main.models import MentorCourse, Enrolled
 
 
-class HasPurchasedCourse(BasePermission):
-    message = "You do not have permission to view this course content."
+class CanModifyOwnCoursesPermission(BasePermission):
+    message = "You don't have permission to modify this course."
 
-    def has_permission(self, request, view):
-        course_id = view.kwargs.get('pk')
-
-        if request.user and request.user.is_authenticated:
-            return request.user.purchased_courses.filter(course_id=course_id).exists()
-
-        return False
+    def has_object_permission(self, request, view, obj):
+        # Foydalanuvchi kursni o'zgartira olishi mumkinmi?
+        user = request.user
+        return MentorCourse.objects.filter(user=user, course=obj).exists()
 
 
-class IsCourseMentor(BasePermission):
-    message = "You do not have permission to modify this course."
+class CanAccessPurchasedContentPermission(BasePermission):
+    message = "You don't have permission to access this content."
 
-    def has_permission(self, request, view):
-        course_id = view.kwargs.get('pk')
-
-        if request.user and request.user.is_authenticated:
-            return MentorCourse.objects.filter(user=request.user, course_id=course_id).exists()
-
-        return False
+    def has_object_permission(self, request, view, obj):
+        # Foydalanuvchi kursni sotib oldimi?
+        user = request.user
+        course_id = obj.course.id
+        return Enrolled.objects.filter(user=user, course_id=course_id).exists()

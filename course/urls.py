@@ -1,19 +1,19 @@
 from django.urls import path
-from .views import UploadCourseAPIView, CourseCommentAPIView, CourseStarAPIView, CourseModulAPIView, \
-    CourseModulLessonAPIView, LessonCommentAPIView, LessonStarAPIView, EditCourseAPIView, CourseCountAPIView, \
+from .views import UploadCourseAPIView, CourseCommentView, CourseStarAPIView, CourseModulAPIView, \
+    ModulLessonAPIView, LessonCommentAPIView, LessonStarAPIView, EditCourseAPIView, SpeakerUploadedCoursesAPIView, \
     UploadWebinarAPIView, UserBalanceAPIView, EnrolledAPIView
 
 urlpatterns = [
     path('course', UploadCourseAPIView.as_view(), name='course'),
-    path('commentcourse/<int:pk>', CourseCommentAPIView.as_view(), name='comment_course'),
-    path('coursestar/<int:pk>', CourseStarAPIView.as_view(), name='course_star'),
-    path('coursemodul', CourseModulAPIView.as_view(), name='course_modul'),
-    path('coursemodullesson', CourseModulLessonAPIView.as_view(), name='course_modul_lesson'),
-    path('lessoncomment/<int:pk>', LessonCommentAPIView.as_view(), name='lesson_comment'),
-    path('lessonstar/<int:pk>', LessonStarAPIView.as_view(), name='lesson_star'),
-    path('editcourse/<int:pk>', EditCourseAPIView.as_view(), name='edit_course'),
-    path('usercoursecount', CourseCountAPIView.as_view(), name='user_course_count'),
-    path('uploadwebinar', UploadWebinarAPIView.as_view(), name='upload_webinar'),
-    path('usertransaction', UserBalanceAPIView.as_view(), name='user_transaction'),
+    path('course-comment', CourseCommentView.as_view(), name='course_comment'),
+    path('course-star', CourseStarAPIView.as_view(), name='course_star'),
+    path('course-modul', CourseModulAPIView.as_view(), name='course_modul'),
+    path('modul-lesson', ModulLessonAPIView.as_view(), name='modul_lesson'),
+    path('lesson-comment', LessonCommentAPIView.as_view(), name='lesson_comment'),
+    path('lesson-star', LessonStarAPIView.as_view(), name='lesson_star'),
+    path('edit-course/<int:pk>', EditCourseAPIView.as_view(), name='edit_course'),
+    path('speaker-courses', SpeakerUploadedCoursesAPIView.as_view(), name='speaker-courses'),
+    path('upload-webinar', UploadWebinarAPIView.as_view(), name='upload_webinar'),
+    path('user-transaction', UserBalanceAPIView.as_view(), name='user_transaction'),
     path('enrolled', EnrolledAPIView.as_view(), name='enrolled'),
 ]

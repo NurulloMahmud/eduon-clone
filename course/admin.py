@@ -5,4 +5,3 @@ from main.models import (Enrolled, Course, CourseComment, CourseStar, Lesson, Le
 # Register your models here.
 admin.site.register((Course, CourseComment, CourseStar, Lesson, LessonComment, LessonStar, Level, Modul,
                      MentorCourse, Category, Transaction, TransactionCourse, Enrolled, SubCategory, Language, Webinar))
-# admin.site.register(Enrolled)
